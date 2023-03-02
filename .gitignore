@@ -17,3 +17,4 @@ BotnetDetector
 
 BotnetDetectorsComparer/*.txt
 .ipynb_checkpoints/
+__pycache__/
