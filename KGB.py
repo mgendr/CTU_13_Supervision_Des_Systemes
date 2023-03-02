@@ -135,5 +135,7 @@ def proceed_KGB(df, anomaly_threshold, window_time = 5, fill_na_ctxt = True,
                                         axis = 1)
     #return res.sort_values(ascending=False)
     
-    return [ index for index, row in res.iteritems() if row>anomaly_threshold]
+    #return [ index for index, row in res.iteritems() if row>anomaly_threshold]
+    
+    return res[res>anomaly_threshold]
 
