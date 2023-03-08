@@ -106,7 +106,7 @@ def compute_anomaly_score(row, eigen, major_components = True,k=1):
     return value_sum
 
 
-def proceed_KGB(df, anomaly_threshold, window_time = 5, fill_na_ctxt = True,
+def proceed_KGB(df, anomaly_threshold = 0, window_time = 5, fill_na_ctxt = True,
                 drop_limit_eigen = 10**-6,
                 major_components = True,k=1
                ) :
@@ -137,5 +137,5 @@ def proceed_KGB(df, anomaly_threshold, window_time = 5, fill_na_ctxt = True,
     
     #return [ index for index, row in res.iteritems() if row>anomaly_threshold]
     
-    return res[res>anomaly_threshold]
+    return res[res>=anomaly_threshold]
 
