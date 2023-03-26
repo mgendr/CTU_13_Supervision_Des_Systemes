@@ -53,9 +53,6 @@ def compute_contexte_vector(df, window_size = 1, window_count = 5, verbose = Fal
         Count of Windows in the context vector. The default is 5
     verbose : boolean, optional
         if you want more details. The default is False.
-    fillna : boolean, optional
-        if set to True, set entropy nan values to 0. Indeed due to inactivaty of a specific IP adress during specific minutes,
-        sometimes we have no record. The default is True.
 
     Returns
     -------
@@ -98,9 +95,11 @@ def compute_contexte_vector(df, window_size = 1, window_count = 5, verbose = Fal
         
     if verbose : 
         print(f"Time required to compute aggregation : {np.round((time.time_ns() - tmp_mesure)/(10**9),2)} s")
-   
-    if fillna : 
-        futur_df = futur_df.fillna(0)  
+
+
+    # If we have no value in a winodw for a specific IP source, we will obtain a nan
+    # we replace it by a 0
+    futur_df = futur_df.fillna(0)  
     
     return futur_df
 
@@ -195,7 +194,7 @@ def compute_anomaly_score(row, eigen, major_components = True,k=1):
     return value_sum
 
 
-def proceed_KGB(df, anomaly_threshold = 0, window_count = 5, window_size = 1, fill_na_ctxt = True,
+def proceed_KGB(df, anomaly_threshold = 0, window_count = 5, window_size = 1,
                 drop_limit_eigen = 10**-6,
                 major_components = True,k=1
                ) :
@@ -213,9 +212,6 @@ def proceed_KGB(df, anomaly_threshold = 0, window_count = 5, window_size = 1, fi
         Duration in minutes of the window. The default is 1.
     window_count : int, optionnal
         Count of Windows in the context vector. The default is 5
-    fill_na_ctxt : boolean, optional
-        if set to True, set entropy nan values to 0. Indeed du to inactivaty of a specific IP adress during specific minutes,
-        sometimes we have no record. The default is True.
     drop_limit_eigen : float, optional
         We drop eigen vector/values below that limit. The default is 10**-6.(cf paper).
         Supposed to be useful in order to maintain numerical stability.
@@ -231,7 +227,7 @@ def proceed_KGB(df, anomaly_threshold = 0, window_count = 5, window_size = 1, fi
 
     """
     # Compute context vectors
-    context = compute_contexte_vector(df, window_count = window_count, window_size = window_size, fillna = fill_na_ctxt)
+    context = compute_contexte_vector(df, window_count = window_count, window_size = window_size)
     
     # Compute eigen values & eigen vectors
     new_components, eigen_values_vectors = compute_pca_over_vector(context, drop_limit = drop_limit_eigen)  
