@@ -12,17 +12,57 @@ from sklearn.decomposition import PCA
 
 
 def preprocess_df(df): 
+    """
+    Run preprocessing operations
+
+    Parameters
+    ----------
+    df : Pandas DataFrame
+        
+
+    Returns
+    -------
+    df : Pandas DataFrame
+        preprocessed df
+
+    """
+    # fill nan values in order to have only integers in Ports columns
     df['Sport'] = df['Sport'].fillna(-1)
     df['Dport'] = df['Dport'].fillna(-1)
+    
+    # Extract labels
     df["Backgroung_label"] = df.Label.str.contains("Background")
     df["Normal_label"] = df.Label.str.contains("Normal")
     df["Botnet_label"] = df.Label.str.contains("Botnet")
+    
+    # Convert time column to a proper format
     df["StartTime"] = pd.to_datetime(df["StartTime"])
+    # sort by time 
     df.sort_values("StartTime", inplace = True)
     return df
 
 
 def compute_contexte_vector(df, window_time = 5, verbose = False, fillna= True):
+    """
+    
+
+    Parameters
+    ----------
+    df : TYPE
+        DESCRIPTION.
+    window_time : TYPE, optional
+        DESCRIPTION. The default is 5.
+    verbose : TYPE, optional
+        DESCRIPTION. The default is False.
+    fillna : TYPE, optional
+        DESCRIPTION. The default is True.
+
+    Returns
+    -------
+    futur_df : TYPE
+        DESCRIPTION.
+
+    """
     # window_time : the window_time which will be considered
     to_keep = ["StartTime","SrcAddr","DstAddr","Sport", "Dport","Label","Backgroung_label","Normal_label","Botnet_label"]
     df_for_entropies = df[to_keep]
